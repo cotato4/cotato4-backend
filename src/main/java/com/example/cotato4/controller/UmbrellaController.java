@@ -5,10 +5,11 @@ import com.example.cotato4.service.UmbrellaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.json.simple.JSONObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "umbrella", description = "umbrella")
+@Tag(name = "umbrella")
 @RequiredArgsConstructor
 @RequestMapping("/umbrella")
 @RestController
@@ -16,9 +17,21 @@ public class UmbrellaController {
 
     public final UmbrellaService umbrellaService;
 
-    @Operation(summary = "umbrella", description = "umbrella")
+    @Operation(summary = "우산 등록")
     @PostMapping("/{userId}")
-    public ResponseEntity createPost(@PathVariable Long userId, @RequestBody UmbrellaRequestDto umbrellaRequestDto) {
+    public ResponseEntity<?> createPost(@PathVariable Long userId,
+                                        @RequestBody UmbrellaRequestDto umbrellaRequestDto) {
         return umbrellaService.createPost(userId, umbrellaRequestDto);
+    }
+
+    @Operation(summary = "가까운 지하철 역 찾기")
+    @GetMapping("/{userId}/subway")
+    public JSONObject getSubwayList (@PathVariable Long userId,
+                                     @RequestParam Double lat,
+                                     @RequestParam Double lng) {
+        JSONObject obj = new JSONObject();
+        obj.put("userId", userId);
+        obj.put("subwayList", umbrellaService.getSubwayList(userId, lat, lng));
+        return obj;
     }
 }

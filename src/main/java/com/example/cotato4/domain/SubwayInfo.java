@@ -18,7 +18,7 @@ public class SubwayInfo {
 
     private String name;
 
-    private String line;
+    private int line;
 
     private double lat;
 
