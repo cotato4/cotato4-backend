@@ -9,14 +9,20 @@ import lombok.*;
 @Builder
 @RequiredArgsConstructor
 @AllArgsConstructor
-public class Member {
+public class User {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "member_id")
+    @Column(name = "user_id")
     private Long id;
 
     @Column
-    private String name;
+    private String nickname;
+
+    @Column
+    private String phoneNumber;
+
+    @Column
+    private String password;
 
     @Column(unique = true)
     private String email;
