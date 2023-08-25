@@ -1,14 +1,27 @@
 package com.example.cotato4.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
-@Data
+import javax.persistence.*;
+
+@Getter
+@Setter
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
+@Entity
 public class SubwayInfo {
+
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "subway_info_id")
+    private Long id;
+
+    private String name;
+
     private String line;
+
     private double lat;
+
     private double lng;
+
 }
