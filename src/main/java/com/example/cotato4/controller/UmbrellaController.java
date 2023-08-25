@@ -24,6 +24,19 @@ public class UmbrellaController {
         return umbrellaService.createPost(userId, umbrellaRequestDto);
     }
 
+    @GetMapping("/{userId}")
+    public JSONObject getPosts(@PathVariable Long userId, @RequestParam String subway) {
+        JSONObject obj = new JSONObject();
+        obj.put("userId", userId);
+        obj.put("umbrellaList", umbrellaService.getPosts(subway));
+        return obj;
+    }
+
+    @GetMapping("/{userId}/{umbrellaId}")
+    public ResponseEntity<?> getPost(@PathVariable Long userId, @PathVariable Long umbrellaId) {
+        return umbrellaService.getPost(userId, umbrellaId);
+    }
+
     @Operation(summary = "가까운 지하철 역 찾기")
     @GetMapping("/{userId}/subway")
     public JSONObject getSubwayList (@PathVariable Long userId,

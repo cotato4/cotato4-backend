@@ -3,8 +3,10 @@ package com.example.cotato4.service;
 import com.example.cotato4.domain.SubwayInfo;
 import com.example.cotato4.domain.Umbrella;
 import com.example.cotato4.domain.User;
+import com.example.cotato4.dto.UmbrellaListResponseDto;
 import com.example.cotato4.dto.SubwayResponseDto;
 import com.example.cotato4.dto.UmbrellaRequestDto;
+import com.example.cotato4.dto.UmbrellaResponseDto;
 import com.example.cotato4.repository.SubwayInfoRepository;
 import com.example.cotato4.repository.UmbrellaRepository;
 import com.example.cotato4.repository.UserRepository;
@@ -13,6 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -47,16 +52,13 @@ public class UmbrellaService {
                 subwayMap.put(calcDist(lat - subwayInfo.getLat(), lng - subwayInfo.getLng()), subwayInfo.getName());
             }
         }
-//        for (int i = 0; i < 3; i++) {
-//            subwayInfoList = subwayInfoRepository.findAllByName(subwayMap.)
-//        }
+
         Iterator<Map.Entry<Double,String>> iterator = subwayMap.entrySet().iterator();
 
         List<SubwayResponseDto> subwayResponseDtoList = new ArrayList<>();
 
         for (int i = 0; i < 3 && iterator.hasNext(); i++) {
             Map.Entry<Double,String> entry = iterator.next();
-//            System.out.println("Key: " + entry.getKey() + ", Value: "+ entry.getValue());
             subwayInfoList = subwayInfoRepository.findAllByName(entry.getValue());
             List<Integer> lineList = new ArrayList<>();
             for (SubwayInfo subwayInfo : subwayInfoList) {
@@ -86,4 +88,27 @@ public class UmbrellaService {
         put(8, "#E6186C");
         put(9, "#BDB092");
     }};
+
+    public List<UmbrellaListResponseDto> getPosts(String subway) {
+        List<Umbrella> umbrellaList = umbrellaRepository.findAllBySubway(subway);
+        List<UmbrellaListResponseDto> umbrellaResponseDtos = new ArrayList<>();
+
+        for(Umbrella umbrella : umbrellaList) {
+            UmbrellaListResponseDto responseDto = UmbrellaListResponseDto.toDto(
+                    userRepository.findById(umbrella.getUser().getId()).get(), umbrella
+            );
+
+            umbrellaResponseDtos.add(responseDto);
+        }
+        return umbrellaResponseDtos;
+    }
+
+    public ResponseEntity<?> getPost(Long userId, Long umbrellaId) {
+        Umbrella umbrella = umbrellaRepository.findById(umbrellaId).get();
+
+        UmbrellaResponseDto umbrellaResponseDto = UmbrellaResponseDto.toDto(
+                userId ,userRepository.findById(umbrella.getUser().getId()).get(), umbrella);
+
+        return ResponseEntity.ok().body(umbrellaResponseDto);
+    }
 }
